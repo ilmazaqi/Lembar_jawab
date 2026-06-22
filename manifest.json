@@ -2,7 +2,7 @@
   "name": "Lembar Jawab Pilihan Ganda",
   "short_name": "LJK Online",
   "description": "Aplikasi lembar jawab interaktif untuk latihan soal.",
-  "start_url": "index.html",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#f0f2f5",
   "theme_color": "#2b579a",

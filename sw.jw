@@ -1,0 +1,23 @@
+const CACHE_NAME = 'ljk-pwa-v1';
+const ASSETS = [
+  'index.html',
+  'manifest.json'
+];
+
+// Tahap Install: Menyimpan file penting ke dalam cache
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
+  );
+});
+
+// Tahap Ambil Data: Menggunakan data dari cache jika sedang offline
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
+  );
+});

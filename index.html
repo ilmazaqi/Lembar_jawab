@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembar Jawab Pilihan Ganda</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2b579a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <style>
+        :root {
+            --primary-color: #2b579a;
+            --secondary-color: #f2f4f7;
+            --accent-color: #e81123;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+
+        .setup-section, .quiz-section, .summary-section {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1e3d6b;
+        }
+
+        .btn-reset {
+            background-color: var(--accent-color);
+        }
+
+        .btn-reset:hover {
+            background-color: #b30c1b;
+        }
+
+        .question-row {
+            display: table;
+            width: 100%;
+            padding: 10px 0;
+            border-bottom: 1px solid #e8ecef;
+            box-sizing: border-box;
+        }
+
+        .question-number {
+            display: table-cell;
+            width: 35px;
+            vertical-align: middle;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        .options-group {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: justify;
+        }
+
+        .options-flex {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .option-cell {
+            display: table-cell;
+            text-align: center;
+        }
+
+        .option-label {
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            line-height: 32px;
+            border: 2px solid #bcccda;
+            border-radius: 50%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background-color: #fff;
+            color: #555;
+            user-select: none;
+            box-sizing: border-box;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .option-label input[type="radio"] {
+            display: none;
+        }
+
+        .option-label:has(input[type="radio"]:checked) {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .summary-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .summary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .unanswered {
+            color: #999;
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Lembar Jawab Pilihan Ganda</h2>
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
+    <div id="setupSection" class="setup-section">
+        <div class="form-group">
+            <label for="totalQuestions">Masukkan Jumlah Soal:</label>
+            <input type="number" id="totalQuestions" min="1" max="150" placeholder="Contoh: 40" inputmode="numeric">
+        </div>
+        <button onclick="generateLembarJawab()">Mulai Latihan</button>
+    </div>
+
+    <div id="quizSection" class="quiz-section hidden">
+        <div id="questionsContainer"></div>
+        <div class="button-group">
+            <button onclick="hitungRangkuman()">Lihat Rangkuman</button>
+            <button class="btn-reset" onclick="resetApp()">Reset / Batal</button>
+        </div>
+    </div>
+
+    <div id="summarySection" class="summary-section hidden">
+        <h3>Rangkuman Pilihan Jawaban Anda</h3>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Jawaban Anda</th>
+                </tr>
+            </thead>
+            <tbody id="summaryTableBody"></tbody>
+        </table>
+        <button class="btn-reset" onclick="resetApp()">Mulai Baru / Reset</button>
+    </div>
+</div>
+
+<script>
+    let jumlahSoalGlobal = 0;
+
+    function generateLembarJawab() {
+        const inputSoal = document.getElementById('totalQuestions');
+        const jumlahSoal = parseInt(inputSoal.value);
+
+        if (isNaN(jumlahSoal) || jumlahSoal <= 0) {
+            alert('Silakan masukkan jumlah soal yang valid.');
+            return;
+        }
+
+        jumlahSoalGlobal = jumlahSoal;
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = ''; 
+
+        for (let i = 1; i <= jumlahSoal; i++) {
+            const row = document.createElement('div');
+            row.className = 'question-row';
+
+            const numberLabel = document.createElement('div');
+            numberLabel.className = 'question-number';
+            numberLabel.innerText = `${i}`;
+            row.appendChild(numberLabel);
+
+            const optionsGroup = document.createElement('div');
+            optionsGroup.className = 'options-group';
+
+            const flexContainer = document.createElement('div');
+            flexContainer.className = 'options-flex';
+
+            const pilihan = ['A', 'B', 'C', 'D', 'E'];
+            pilihan.forEach(opsi => {
+                const cell = document.createElement('div');
+                cell.className = 'option-cell';
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `soal_${i}`;
+                radio.value = opsi;
+
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(opsi));
+                cell.appendChild(label);
+                flexContainer.appendChild(cell);
+            });
+
+            optionsGroup.appendChild(flexContainer);
+            row.appendChild(optionsGroup);
+            container.appendChild(row);
+        }
+
+        document.getElementById('setupSection').classList.add('hidden');
+        document.getElementById('quizSection').classList.remove('hidden');
+        window.scrollTo(0, 0);
+    }
+
+    function hitungRangkuman() {
+        const tableBody = document.getElementById('summaryTableBody');
+        tableBody.innerHTML = ''; 
+
+        for (let i = 1; i <= jumlahSoalGlobal; i++) {
+            const selectedOption = document.querySelector(`input[name="soal_${i}"]:checked`);
+            const jawaban = selectedOption ? selectedOption.value : '<span class="unanswered">Belum diisi</span>';
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${i}</strong></td>
+                <td>${jawaban}</td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        document.getElementById('quizSection').classList.add('hidden');
+        document.getElementById('summarySection').classList.remove('hidden');
+        window.scrollTo(0, 0);
+    }
+
+    function resetApp() {
+        if(confirm("Apakah Anda yakin ingin mereset semua jawaban?")) {
+            document.getElementById('totalQuestions').value = '';
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('summaryTableBody').innerHTML = '';
+            jumlahSoalGlobal = 0;
+
+            document.getElementById('setupSection').classList.remove('hidden');
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('summarySection').classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+    }
+
+    // REGISTRASI SERVICE WORKER UNTUK PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker berhasil didaftarkan!', reg.scope))
+                .catch(err => console.log('Gagal mendaftarkan Service Worker:', err));
+        });
+    }
+</script>
+
+</body>
+</html>

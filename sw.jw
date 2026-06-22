@@ -1,24 +1,24 @@
-{
-  "name": "Lembar Jawab Pilihan Ganda",
-  "short_name": "LJK Online",
-  "description": "Aplikasi lembar jawab interaktif untuk latihan soal.",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#f0f2f5",
-  "theme_color": "#2b579a",
-  "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=192&h=192&fit=crop",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=512&h=512&fit=crop",
-      "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any"
-    }
-  ]
-}
+const CACHE_NAME = 'ljk-pwa-v2';
+const ASSETS = [
+  './',
+  'index.html',
+  'manifest.json'
+];
+
+// Tahap Install
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
+  );
+});
+
+// Tahap Ambil Data
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
+  );
+});
